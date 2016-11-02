@@ -67,47 +67,9 @@ module.exports = buildFlow.create()
                         version: parsed.version,
                         language: this._lang,
                         exports: this._exports
-                    },
-                    globals = opts.exports.globals,
-                    forceGlobals = globals === 'force';
+                    };
 
-                return [].concat(
-                    [
-                        forceGlobals ? 'var BEM;' : '',
-                        '(function (global) {',
-                        '    var __i18n__ = ' + compile(parsed.core, parsed.keysets, opts) + ',',
-                        '        defineAsGlobal = true;',
-                        ''
-                    ],
-                    opts.exports.commonJS ? [
-                        '    // CommonJS',
-                        '    if (typeof exports === "object") {',
-                        '        module.exports = __i18n__;',
-                        forceGlobals ?
-                        '        defineAsGlobal = false;' : '',
-                        '    }',
-                        ''
-                    ] : '',
-                    opts.exports.ym ? [
-                        '    // YModules',
-                        '    if (typeof modules === "object") {',
-                        '        modules.define("i18n", function (provide) {',
-                        '            provide(__i18n__);',
-                        '        });',
-                        forceGlobals ?
-                        '        defineAsGlobal = false;' : '',
-                        '    }',
-                        '',
-                    ] : '',
-                    globals ? [
-                        '    if (defineAsGlobal) {',
-                        forceGlobals ?
-                        '        (BEM || (BEM = {})).I18N = __i18n__;' : '',
-                        '        (global.BEM || (global.BEM = {})).I18N = __i18n__;',
-                        '    }'
-                    ] : '',
-                    '})(typeof window !== "undefined" ? window : global);'
-                ).join(EOL);
+                return compile(parsed.core, parsed.keysets, opts);
             }, this);
     })
     .methods({
